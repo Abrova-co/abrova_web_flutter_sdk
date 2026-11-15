@@ -100,4 +100,18 @@ void main() {
     expect(find.text('نسخه‌ی تازه آماده است'), findsOneWidget);
     expect(find.text('بارگذاری دوباره'), findsOneWidget);
   });
+
+  testWidgets('a deploy with the same version shows its build', (tester) async {
+    await AbrovaWebUpdates.checkNow();
+    server.version = '{"version":"0.5.1","build_number":"13"}';
+    await AbrovaWebUpdates.checkNow();
+    await tester.pumpWidget(app(const AbrovaUpdatePrompt()));
+    await tester.pumpAndSettle();
+    expect(find.text('New version available'), findsOneWidget);
+    expect(find.text('Version 0.5.1 (build 13)'), findsOneWidget);
+
+    await tester.pumpWidget(app(const AbrovaUpdatePrompt(), locale: const Locale('fa')));
+    await tester.pumpAndSettle();
+    expect(find.text('نسخه‌ی 0.5.1 (ساخت 13)'), findsOneWidget);
+  });
 }

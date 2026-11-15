@@ -9,12 +9,16 @@ class AbrovaUpdateStrings {
     required this.whatsNew,
     required this.reload,
     required this.later,
+    this.versionBuild,
   });
 
   final String title;
 
   /// "Version {v}".
   final String Function(String version) version;
+
+  /// "Version {v} (build {b})": shown when the new deploy has the same version as the running one.
+  final String Function(String version, String build)? versionBuild;
   final String body;
   final String requiredTitle;
   final String requiredBody;
@@ -31,6 +35,7 @@ class AbrovaUpdateStrings {
     whatsNew: 'What’s new',
     reload: 'Reload',
     later: 'Later',
+    versionBuild: (v, b) => 'Version $v (build $b)',
   );
 
   static final fa = AbrovaUpdateStrings(
@@ -42,6 +47,7 @@ class AbrovaUpdateStrings {
     whatsNew: 'تازه‌ها',
     reload: 'بارگذاری دوباره',
     later: 'بعداً',
+    versionBuild: (v, b) => 'نسخه‌ی $v (ساخت $b)',
   );
 
   static AbrovaUpdateStrings forLanguage(String languageCode) => languageCode == 'fa' ? fa : en;

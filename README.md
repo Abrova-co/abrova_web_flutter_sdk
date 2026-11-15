@@ -9,7 +9,7 @@ For Flutter web apps that people install on their phone (PWA): where the app run
 dependencies:
   abrova_web:
     hosted: https://center.abrova.ir/api/packages/abrova/pub
-    version: ^0.2.0
+    version: ^0.2.1
 ```
 
 ## Install guide
@@ -48,6 +48,13 @@ void main() {
 }
 
 AbrovaUpdatePrompt(icon: Image.asset('assets/icon.png')) // "New version available" · Reload · Later
+```
+
+Build every deploy with its own build number, so open pages see it (the prompt shows "Version 0.5.1 (build 13)"
+when only the build changed):
+
+```bash
+flutter build web --release --build-number=13
 ```
 
 Optional `web/update.json`: `{"minimum": "0.6.0", "notes": {"en": "…", "fa": "…"}}` — below `minimum` the update is

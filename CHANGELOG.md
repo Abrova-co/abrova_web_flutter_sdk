@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1] - 2026-11-15
+
+### Changed
+- `AbrovaUpdatePrompt` and `AbrovaUpdateGate` show the build ("Version 0.5.1 (build 13)") when the new deploy has the
+  same version as the running one.
+- `AbrovaUpdateStrings.versionBuild` (optional): the text for that case; English and Persian built in.
+
 ## [0.2.0] - 2026-11-15
 
 ### Added
