@@ -4,7 +4,11 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 /// The install guide in each situation, side by side (?lang=fa for Persian). In your app, use
 /// `const AbrovaInstallGuide(appName: 'Your app')`: it picks the situation itself.
-void main() => runApp(const Example());
+void main() {
+  // New versions: checks version.json now, when the app comes back, and every 5 s here (10 min by default).
+  AbrovaWebUpdates.start(every: const Duration(seconds: 5));
+  runApp(const Example());
+}
 
 const _iphone =
     'Mozilla/5.0 (iPhone; CPU iPhone OS 18_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.6 Mobile/15E148 Safari/604.1';
@@ -32,10 +36,12 @@ class Example extends StatelessWidget {
       theme: ThemeData(colorSchemeSeed: const Color(0xFF1C72C8)),
       darkTheme: ThemeData(colorSchemeSeed: const Color(0xFF1C72C8), brightness: Brightness.dark),
       themeMode: Uri.base.queryParameters['dark'] == '1' ? ThemeMode.dark : ThemeMode.light,
+      builder: (context, child) => AbrovaUpdateGate(icon: _icon, accentColor: _brand, child: child!),
       home: Scaffold(
         appBar: AppBar(title: const Text('abrova_web')),
         body: ListView(
           children: [
+            AbrovaUpdatePrompt(icon: _icon, accentColor: _brand),
             const _Label('iPhone, Safari tab'),
             AbrovaInstallGuide(appName: name, icon: _icon, accentColor: _brand, context: AbrovaWebContext.fromUserAgent(_iphone, installed: false)),
             const _Label('iPhone, Safari 26 (Share under ⋯)'),
