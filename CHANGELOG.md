@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0] - 2026-11-15
+
+### Added
+- `dart run abrova_web:setup`: a branded offline page (`web/offline.html`, Persian and English, Try again, reloads
+  when the connection is back) from `web/manifest.json`, served by the root service worker `web/abrova-push-sw.js`
+  when the app is opened with no network.
+
 ## [0.2.1] - 2026-11-15
 
 ### Changed

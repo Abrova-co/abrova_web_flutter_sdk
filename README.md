@@ -9,7 +9,7 @@ For Flutter web apps that people install on their phone (PWA): where the app run
 dependencies:
   abrova_web:
     hosted: https://center.abrova.ir/api/packages/abrova/pub
-    version: ^0.2.1
+    version: ^0.3.0
 ```
 
 ## Install guide
@@ -59,5 +59,16 @@ flutter build web --release --build-number=13
 
 Optional `web/update.json`: `{"minimum": "0.6.0", "notes": {"en": "…", "fa": "…"}}` — below `minimum` the update is
 required.
+
+## Offline page
+
+```bash
+dart run abrova_push:web_push_setup --root
+dart run abrova_web:setup --accent "#1C72C8"
+```
+
+Writes `web/offline.html` (name, colours and icon from `web/manifest.json`, `--accent` for the button) and adds it to
+the root service worker `web/abrova-push-sw.js`: opening the app with no network shows it, and it reloads when the
+connection is back. Run both again after upgrading `abrova_push`, and when the manifest or icon change.
 
 Docs: https://abrova.ir/docs/push/install-guide
