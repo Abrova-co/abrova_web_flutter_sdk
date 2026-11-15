@@ -129,7 +129,7 @@ class AbrovaInstallStrings {
     copyLink: 'کپی لینک',
     linkCopied: 'لینک کپی شد',
     notNow: 'بعداً',
-    fromStore: 'از فروشگاه ابروا',
+    fromStore: 'از فروشگاه ابرووا',
     onHomeScreen: 'روی صفحه‌ی اصلی شماست',
     getStarted: 'شروع',
     stepOf: (n, of) => 'مرحله‌ی ${const ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'][n]} از ${const ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'][of]}',

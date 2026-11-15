@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.5.2] - 2026-11-16
+
+### Fixed
+- Persian: the install guide's store label is «از فروشگاه ابرووا» (the brand's spelling).
+
 ## [0.5.1] - 2026-11-16
 
 ### Fixed
