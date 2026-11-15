@@ -9,7 +9,7 @@ For Flutter web apps that people install on their phone (PWA): where the app run
 dependencies:
   abrova_web:
     hosted: https://center.abrova.ir/api/packages/abrova/pub
-    version: ^0.3.0
+    version: ^0.4.0
 ```
 
 ## Install guide
@@ -60,15 +60,21 @@ flutter build web --release --build-number=13
 Optional `web/update.json`: `{"minimum": "0.6.0", "notes": {"en": "…", "fa": "…"}}` — below `minimum` the update is
 required.
 
-## Offline page
+## Launch screen, splash images and offline page
 
 ```bash
 dart run abrova_push:web_push_setup --root
 dart run abrova_web:setup --accent "#1C72C8"
 ```
 
-Writes `web/offline.html` (name, colours and icon from `web/manifest.json`, `--accent` for the button) and adds it to
-the root service worker `web/abrova-push-sw.js`: opening the app with no network shows it, and it reloads when the
-connection is back. Run both again after upgrading `abrova_push`, and when the manifest or icon change.
+From `web/manifest.json` (name, `background_color`, icons) and `--accent`:
+
+- the launch screen in `web/index.html` (icon, name, loading bar, Persian and English), until Flutter's first frame;
+- the iPhone and iPad splash images in `web/splash/` with their tags in `web/index.html` (needs Google Chrome;
+  `--no-splash` skips them);
+- `web/offline.html`, added to the root service worker `web/abrova-push-sw.js`: opening the app with no network
+  shows it, and it reloads when the connection is back.
+
+Run both again after upgrading `abrova_push`, and when the manifest or icons change.
 
 Docs: https://abrova.ir/docs/push/install-guide
