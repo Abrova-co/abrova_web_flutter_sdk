@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.1] - 2026-11-16
+
+### Fixed
+- Store analytics: `open`, `installed` and the install guide's events carry the running build. They wait for
+  `version.json` (at most 3 seconds) instead of going out before it is read, so Abrova Store knows which build each
+  device runs and no longer offers an update the device already has.
+
 ## [0.5.0] - 2026-11-16
 
 ### Added

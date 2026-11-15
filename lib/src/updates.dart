@@ -72,6 +72,14 @@ abstract final class AbrovaWebUpdates {
     _timer = Timer.periodic(every, (_) => unawaited(checkNow()));
   }
 
+  /// Reads the running version once (version.json), for analytics that start before [start] has read it.
+  static Future<String?> readRunning() async {
+    if (_running != null) return _running;
+    final version = _version(await fetch('version.json'));
+    _running ??= version;
+    return _running;
+  }
+
   /// Checks once.
   static Future<void> checkNow() async {
     final version = _version(await fetch('version.json'));

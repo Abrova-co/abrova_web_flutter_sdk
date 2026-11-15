@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
@@ -23,6 +24,10 @@ abstract final class AbrovaWebAnalytics {
   static Uri? _api;
   static final _sent = <String>{};
 
+  /// Events wait until the running build is known (version.json, at most 3 s), so each carries its build.
+  static bool _ready = false;
+  static final _waiting = <void Function()>[];
+
   /// For tests: what was sent.
   @visibleForTesting
   static void Function(String url, String body) send = platform.postJson;
@@ -40,17 +45,34 @@ abstract final class AbrovaWebAnalytics {
     final sd = url?.queryParameters['sd'];
     if (sd != null && RegExp(r'^[A-Za-z0-9_-]{8,64}$').hasMatch(sd)) platform.storageSet(_storeDeviceKey, sd);
     final installed = AbrovaWeb.context.installed;
-    track('open', standalone: installed);
-    if (installed && platform.storageGet(_installedKey) == null) {
-      platform.storageSet(_installedKey, DateTime.now().toIso8601String());
-      track('installed', standalone: true);
-    }
+    final first = installed && platform.storageGet(_installedKey) == null;
+    if (first) platform.storageSet(_installedKey, DateTime.now().toIso8601String());
+    unawaited(AbrovaWebUpdates.readRunning().timeout(const Duration(seconds: 3), onTimeout: () => null).catchError((_) => null).then((_) {
+      _ready = true;
+      _send('open', standalone: installed);
+      if (first) _send('installed', standalone: true);
+      final waiting = List.of(_waiting);
+      _waiting.clear();
+      for (final event in waiting) {
+        event();
+      }
+    }));
   }
 
-  /// Sends one event. [once]: at most once per page load (the install guide shown).
+  /// Sends one event. [once]: at most once per page load (the install guide shown). Before the running build is known
+  /// the event waits (and goes after `open`).
   static void track(String name, {bool? standalone, String? value, bool once = false}) {
     if (_app == null || _api == null) return;
     if (once && !_sent.add(name)) return;
+    if (!_ready) {
+      _waiting.add(() => _send(name, standalone: standalone, value: value));
+      return;
+    }
+    _send(name, standalone: standalone, value: value);
+  }
+
+  static void _send(String name, {bool? standalone, String? value}) {
+    if (_app == null || _api == null) return;
     final ctx = AbrovaWeb.context;
     final ua = ctx.userAgent;
     final ios = RegExp(r'OS (\d+)_(\d+)').firstMatch(ua);
@@ -97,6 +119,7 @@ abstract final class AbrovaWebAnalytics {
   static void startForTest({required String app, required Uri api}) {
     _app = app;
     _api = api;
+    _ready = true;
   }
 
   @visibleForTesting
@@ -104,6 +127,8 @@ abstract final class AbrovaWebAnalytics {
     _app = null;
     _api = null;
     _sent.clear();
+    _ready = false;
+    _waiting.clear();
     send = platform.postJson;
   }
 }
