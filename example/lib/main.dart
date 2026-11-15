@@ -8,6 +8,8 @@ void main() => runApp(const Example());
 
 const _iphone =
     'Mozilla/5.0 (iPhone; CPU iPhone OS 18_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.6 Mobile/15E148 Safari/604.1';
+const _iphone26 =
+    'Mozilla/5.0 (iPhone; CPU iPhone OS 18_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.0 Mobile/15E148 Safari/604.1';
 const _instagram =
     'Mozilla/5.0 (iPhone; CPU iPhone OS 18_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Instagram 350.0.0.0';
 const _android = 'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36';
@@ -36,6 +38,13 @@ class Example extends StatelessWidget {
           children: [
             const _Label('iPhone, Safari tab'),
             AbrovaInstallGuide(appName: name, icon: _icon, accentColor: _brand, context: AbrovaWebContext.fromUserAgent(_iphone, installed: false)),
+            const _Label('iPhone, Safari 26 (Share under ⋯)'),
+            AbrovaInstallGuide(
+              appName: name,
+              icon: _icon,
+              accentColor: _brand,
+              context: AbrovaWebContext.fromUserAgent(_iphone26, installed: false),
+            ),
             const _Label('Android, the browser offers Install'),
             AbrovaInstallGuide(
               appName: name,

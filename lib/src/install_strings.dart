@@ -9,6 +9,9 @@ class AbrovaInstallStrings {
     required this.title,
     required this.benefit,
     required this.iosShare,
+    required this.iosShareIpad,
+    required this.iosShareMore,
+    required this.menuCaption,
     required this.iosAdd,
     required this.openFromIcon,
     required this.androidMenu,
@@ -35,7 +38,17 @@ class AbrovaInstallStrings {
 
   /// Why: notifications, faster opening.
   final String benefit;
+  /// iPhone, Safari up to 18: the Share button at the bottom.
   final String iosShare;
+
+  /// iPad: the Share button at the top.
+  final String iosShareIpad;
+
+  /// iPhone, Safari 26 and later: Share is under ⋯.
+  final String iosShareMore;
+
+  /// Above the picture of the menu row.
+  final String menuCaption;
   final String iosAdd;
 
   /// "Open {app} from its new icon".
@@ -59,8 +72,11 @@ class AbrovaInstallStrings {
     menuAddToHome: 'Add to Home Screen',
     title: (app) => 'Add $app to your Home Screen',
     benefit: 'Get notifications and open it faster, like an app.',
-    iosShare: 'Tap the Share button',
-    iosAdd: 'Choose “Add to Home Screen”',
+    iosShare: 'Tap the Share button at the bottom of Safari',
+    iosShareIpad: 'Tap the Share button at the top of Safari',
+    iosShareMore: 'Tap ⋯ at the bottom of Safari, then Share',
+    menuCaption: 'In Safari’s Share menu:',
+    iosAdd: 'Choose “Add to Home Screen” (scroll down if you don’t see it), then tap Add',
     openFromIcon: (app) => 'Open $app from its new icon',
     androidMenu: 'Tap the browser menu ⋮',
     androidAdd: 'Choose “Install app” or “Add to Home screen”',
@@ -80,8 +96,11 @@ class AbrovaInstallStrings {
     menuAddToHome: 'Add to Home Screen',
     title: (app) => '$app را به صفحه‌ی اصلی اضافه کنید',
     benefit: 'اعلان‌ها را دریافت کنید و مثل یک اپ سریع‌تر بازش کنید.',
-    iosShare: 'روی دکمه‌ی اشتراک‌گذاری (Share) بزنید',
-    iosAdd: '«Add to Home Screen» (افزودن به صفحه‌ی اصلی) را انتخاب کنید',
+    iosShare: 'پایین Safari روی دکمه‌ی اشتراک‌گذاری (Share) بزنید',
+    iosShareIpad: 'بالای Safari روی دکمه‌ی اشتراک‌گذاری (Share) بزنید',
+    iosShareMore: 'پایین Safari روی ⋯ بزنید، سپس Share',
+    menuCaption: 'در منوی Share سافاری:',
+    iosAdd: '«Add to Home Screen» (افزودن به صفحه‌ی اصلی) را انتخاب کنید (اگر نمی‌بینید پایین بروید)، سپس Add را بزنید',
     openFromIcon: (app) => '$app را از آیکون تازه‌اش باز کنید',
     androidMenu: 'روی منوی مرورگر ⋮ بزنید',
     androidAdd: '«Install app» یا «Add to Home screen» را انتخاب کنید',

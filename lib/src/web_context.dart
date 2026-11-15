@@ -22,6 +22,8 @@ class AbrovaWebContext {
     required this.isIos,
     required this.isAndroid,
     required this.installed,
+    this.isIpad = false,
+    this.safariVersion,
     this.inAppBrowser,
     this.canPromptInstall = false,
   });
@@ -34,6 +36,12 @@ class AbrovaWebContext {
   /// iPhone or iPad (iPadOS reports itself as a Mac with a touch screen).
   final bool isIos;
   final bool isAndroid;
+
+  /// iPad (Safari's Share button is at the top there).
+  final bool isIpad;
+
+  /// Safari's major version on iPhone and iPad (`Version/26`); null when unknown. From 26 the Share button is under ⋯.
+  final int? safariVersion;
 
   /// Opened as an installed app (from the Home Screen), not in a browser tab.
   final bool installed;
@@ -73,8 +81,8 @@ class AbrovaWebContext {
     int maxTouchPoints = 0,
     bool canPromptInstall = false,
   }) {
-    final isIos = RegExp('iPhone|iPad|iPod').hasMatch(userAgent) ||
-        (userAgent.contains('Macintosh') && maxTouchPoints > 1);
+    final isIpad = userAgent.contains('iPad') || (userAgent.contains('Macintosh') && maxTouchPoints > 1);
+    final isIos = isIpad || RegExp('iPhone|iPod').hasMatch(userAgent);
     final isAndroid = !isIos && userAgent.contains('Android');
     String? inApp;
     for (final entry in _inAppTokens.entries) {
@@ -88,10 +96,14 @@ class AbrovaWebContext {
       if (isAndroid && userAgent.contains('; wv)')) inApp = 'an app';
       if (isIos && !userAgent.contains('Safari/')) inApp = 'an app';
     }
+    // Safari's own version: from iOS 26 the user agent keeps saying "OS 18_6", only "Version/26" tells.
+    final safari = isIos ? int.tryParse(RegExp(r'Version/(\d+)').firstMatch(userAgent)?.group(1) ?? '') : null;
     return AbrovaWebContext(
       isWeb: true,
       isIos: isIos,
       isAndroid: isAndroid,
+      isIpad: isIpad,
+      safariVersion: safari,
       installed: installed,
       inAppBrowser: inApp,
       canPromptInstall: canPromptInstall,
