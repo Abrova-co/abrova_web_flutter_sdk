@@ -1,6 +1,6 @@
 name: abrova_web
 description: "Abrova Web for Flutter web apps that people install on their phone (PWA): launch screen and iPhone splash images, Add to Home Screen guide, new-version prompt and offline page, in Persian and English."
-version: 0.4.0
+version: 0.5.0
 homepage: https://abrova.ir
 repository: https://github.com/Abrova-co/abrova_web_flutter_sdk
 

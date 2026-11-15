@@ -9,7 +9,7 @@ For Flutter web apps that people install on their phone (PWA): where the app run
 dependencies:
   abrova_web:
     hosted: https://center.abrova.ir/api/packages/abrova/pub
-    version: ^0.4.0
+    version: ^0.5.0
 ```
 
 ## Install guide
@@ -76,5 +76,27 @@ From `web/manifest.json` (name, `background_color`, icons) and `--accent`:
   shows it, and it reloads when the connection is back.
 
 Run both again after upgrading `abrova_push`, and when the manifest or icons change.
+
+## Abrova Store
+
+Publish (a publish key from the Abrova Store console › your account › Publish keys):
+
+```bash
+ABROVA_STORE_KEY=abs_… dart run abrova_web:publish --app team --live -- --dart-define-from-file=config/app.json
+```
+
+It builds the web app, uploads `build/web` and shows the store's preparation steps. `--test` puts the build on the
+test address, `--required` makes it a required update, `--notes-fa` / `--notes-en` are its notes, `--no-build` uploads
+the build that is there.
+
+Install analytics (anonymous: a random id per device):
+
+```dart
+AbrovaWebAnalytics.start(); // the app is the first part of the address: team.abrova.ir → team
+AbrovaWebAnalytics.reportPushStatus('allowed'); // after asking for notifications: allowed, denied
+```
+
+Opened from Abrova Store (`?from=store`), `AbrovaInstallGuide` continues the store's steps (step 2 of 3), and on the
+first start from the Home Screen it shows "It's on your home screen" once.
 
 Docs: https://abrova.ir/docs/push/install-guide

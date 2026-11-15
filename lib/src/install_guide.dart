@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'analytics.dart';
 import 'card.dart';
 import 'install_strings.dart';
 import 'web_context.dart';
@@ -22,6 +23,7 @@ class AbrovaInstallGuide extends StatelessWidget {
     this.context,
     this.margin = const EdgeInsets.all(16),
     this.dismissDays = 7,
+    this.fromStore,
   });
 
   /// Your app's name, as on its Home Screen icon.
@@ -43,13 +45,23 @@ class AbrovaInstallGuide extends StatelessWidget {
   /// How long "Not now" hides the guide.
   final int dismissDays;
 
+  /// Continue Abrova Store's steps (default: `?from=store` in the address).
+  final bool? fromStore;
+
   static final _dismissed = ValueNotifier<bool>(false);
 
   @override
   Widget build(BuildContext buildContext) {
     final where = context ?? AbrovaWeb.context;
     final need = where.installNeed;
-    if (need == AbrovaInstallNeed.none) return const SizedBox.shrink();
+    if (need == AbrovaInstallNeed.none) {
+      // The first start from the Home Screen: "It's on your home screen" once.
+      if (context != null || !AbrovaWeb.firstHomeScreenStart) return const SizedBox.shrink();
+      return ValueListenableBuilder<bool>(
+        valueListenable: _dismissed,
+        builder: (buildContext, dismissed, _) => dismissed ? const SizedBox.shrink() : _welcome(buildContext),
+      );
+    }
     return ValueListenableBuilder<bool>(
       valueListenable: _dismissed,
       builder: (buildContext, dismissed, _) {
@@ -57,6 +69,9 @@ class AbrovaInstallGuide extends StatelessWidget {
         final text = strings ??
             AbrovaInstallStrings.forLanguage(Localizations.maybeLocaleOf(buildContext)?.languageCode ?? 'en');
         final inApp = need == AbrovaInstallNeed.openInBrowser;
+        AbrovaWebAnalytics.track('guide_shown', once: true);
+        // Opened from Abrova Store: the store did step 1, the guide goes on with the same steps.
+        final store = (fromStore ?? AbrovaWeb.fromStore) && !inApp;
         final steps = switch (need) {
           AbrovaInstallNeed.iosAddToHomeScreen => [
               // Safari 26 put Share under ⋯; on iPad the button is at the top.
@@ -65,12 +80,12 @@ class AbrovaInstallGuide extends StatelessWidget {
               else
                 _Step(where.isIpad ? text.iosShareIpad : text.iosShare, cue: const _ShareCue()),
               _Step(text.iosAdd, cue: _MenuRowCue(text.menuAddToHome, caption: text.menuCaption)),
-              _Step(text.openFromIcon(appName)),
+              if (!store) _Step(text.openFromIcon(appName)),
             ],
           AbrovaInstallNeed.androidInstall when !where.canPromptInstall => [
               _Step(text.androidMenu, cue: const _IconCue(Icons.more_vert)),
               _Step(text.androidAdd, cue: const _IconCue(Icons.install_mobile)),
-              _Step(text.openFromIcon(appName)),
+              if (!store) _Step(text.openFromIcon(appName)),
             ],
           _ => const <_Step>[],
         };
@@ -99,10 +114,12 @@ class AbrovaInstallGuide extends StatelessWidget {
             accent: accentColor ?? Theme.of(buildContext).colorScheme.primary,
             icon: icon,
             title: inApp ? text.inAppTitle(where.inAppBrowser ?? 'an app') : appName,
-            subtitle: inApp ? text.title(appName) : text.subtitle,
+            subtitle: inApp ? text.title(appName) : store && steps.isNotEmpty ? text.stepOf(2, steps.length + 1) : text.subtitle,
             features: inApp
                 ? const []
-                : [
+                : store
+                    ? [(Icons.storefront_rounded, text.fromStore)]
+                    : [
                     (Icons.notifications_active_rounded, text.featureNotifications),
                     (Icons.bolt_rounded, text.featureFast),
                     (Icons.fullscreen_rounded, text.featureFullScreen),
@@ -115,9 +132,19 @@ class AbrovaInstallGuide extends StatelessWidget {
                       style: Theme.of(buildContext).textTheme.bodyMedium?.copyWith(
                           color: Theme.of(buildContext).colorScheme.onSurfaceVariant, height: 1.45)),
                 ),
+              if (store && steps.isNotEmpty)
+                StepRow(
+                  number: 1,
+                  done: true,
+                  text: text.continueTo(appName),
+                  cue: null,
+                  last: false,
+                  accent: accentColor ?? Theme.of(buildContext).colorScheme.primary,
+                  deep: shade(accentColor ?? Theme.of(buildContext).colorScheme.primary, 0.55),
+                ),
               for (final (index, step) in steps.indexed)
                 StepRow(
-                  number: index + 1,
+                  number: index + (store ? 2 : 1),
                   text: step.text,
                   cue: step.cue,
                   last: index == steps.length - 1,
@@ -126,6 +153,7 @@ class AbrovaInstallGuide extends StatelessWidget {
                 ),
             ],
             secondary: (text.notNow, () {
+              AbrovaWebAnalytics.track('guide_dismissed');
               AbrovaWeb.dismissInstallGuide(days: dismissDays);
               _dismissed.value = true;
             }),
@@ -133,6 +161,26 @@ class AbrovaInstallGuide extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  Widget _welcome(BuildContext buildContext) {
+    final text = strings ?? AbrovaInstallStrings.forLanguage(Localizations.maybeLocaleOf(buildContext)?.languageCode ?? 'en');
+    return LuxuryCard(
+      margin: margin,
+      accent: accentColor ?? Theme.of(buildContext).colorScheme.primary,
+      icon: icon,
+      title: text.onHomeScreen,
+      subtitle: appName,
+      features: [
+        (Icons.notifications_active_rounded, text.featureNotifications),
+        (Icons.bolt_rounded, text.featureFast),
+        (Icons.fullscreen_rounded, text.featureFullScreen),
+      ],
+      primary: (Icons.arrow_forward_rounded, text.getStarted, () {
+        AbrovaWeb.closeWelcome();
+        _dismissed.value = true;
+      }),
     );
   }
 

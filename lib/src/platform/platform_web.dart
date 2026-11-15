@@ -93,3 +93,35 @@ void onVisible(void Function() callback) {
 }
 
 void reloadPage() => web.window.location.reload();
+
+String? storageGet(String key) {
+  try {
+    return web.window.localStorage.getItem(key);
+  } catch (_) {
+    return null;
+  }
+}
+
+void storageSet(String key, String value) {
+  try {
+    web.window.localStorage.setItem(key, value);
+  } catch (_) {
+    // storage blocked: nothing remembered
+  }
+}
+
+String currentUrl() => web.window.location.href;
+
+String referrer() => web.document.referrer;
+
+/// Fire and forget, kept alive when the page goes away.
+void postJson(String url, String body) {
+  try {
+    web.window.fetch(
+      url.toJS,
+      web.RequestInit(method: 'POST', body: body.toJS, keepalive: true, headers: {'Content-Type': 'application/json'}.jsify() as web.HeadersInit),
+    );
+  } catch (_) {
+    // offline: the event is lost, nothing breaks
+  }
+}

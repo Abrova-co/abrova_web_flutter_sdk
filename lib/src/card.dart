@@ -197,8 +197,11 @@ class StepRow extends StatelessWidget {
     required this.last,
     required this.accent,
     required this.deep,
+    this.done = false,
   });
 
+  /// Already done (the store did it): a check instead of the number.
+  final bool done;
   final int number;
   final String text;
   final Widget? cue;
@@ -243,8 +246,10 @@ class StepRow extends StatelessWidget {
                   gradient: LinearGradient(colors: [deep, accent], begin: Alignment.topLeft, end: Alignment.bottomRight),
                   boxShadow: [BoxShadow(color: accent.withValues(alpha: 0.35), blurRadius: 8, offset: const Offset(0, 3))],
                 ),
-                child: Text('$number',
-                    style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.white, fontWeight: FontWeight.w700)),
+                child: done
+                    ? const Icon(Icons.check_rounded, size: 18, color: Colors.white)
+                    : Text('$number',
+                        style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.white, fontWeight: FontWeight.w700)),
               ),
               const SizedBox(width: 12),
               Expanded(

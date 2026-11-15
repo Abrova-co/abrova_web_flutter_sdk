@@ -1,6 +1,6 @@
 /// The texts of [AbrovaInstallGuide]. English and Persian are built in; pass your own for other wording or languages.
 class AbrovaInstallStrings {
-  const AbrovaInstallStrings({
+  AbrovaInstallStrings({
     required this.subtitle,
     required this.featureNotifications,
     required this.featureFast,
@@ -22,7 +22,13 @@ class AbrovaInstallStrings {
     required this.copyLink,
     required this.linkCopied,
     required this.notNow,
-  });
+    this.fromStore = 'From Abrova Store',
+    this.onHomeScreen = 'It’s on your home screen',
+    this.getStarted = 'Get started',
+    String Function(int step, int of)? stepOf,
+    String Function(String app)? continueTo,
+  })  : stepOf = stepOf ?? ((n, of) => 'Step $n of $of'),
+        continueTo = continueTo ?? ((app) => 'Continue to $app');
 
   /// Under the app name in the header: "Install the app".
   final String subtitle;
@@ -63,6 +69,19 @@ class AbrovaInstallStrings {
   final String copyLink;
   final String linkCopied;
   final String notNow;
+
+  /// The pill when the app was opened from Abrova Store (`?from=store`).
+  final String fromStore;
+
+  /// "Step 2 of 3" (the store did step 1).
+  final String Function(int step, int of) stepOf;
+
+  /// The store's first step, shown done: "Continue to {app}".
+  final String Function(String app) continueTo;
+
+  /// The first start from the Home Screen.
+  final String onHomeScreen;
+  final String getStarted;
 
   static final en = AbrovaInstallStrings(
     subtitle: 'Install the app',
@@ -110,6 +129,11 @@ class AbrovaInstallStrings {
     copyLink: 'کپی لینک',
     linkCopied: 'لینک کپی شد',
     notNow: 'بعداً',
+    fromStore: 'از فروشگاه ابروا',
+    onHomeScreen: 'روی صفحه‌ی اصلی شماست',
+    getStarted: 'شروع',
+    stepOf: (n, of) => 'مرحله‌ی ${const ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'][n]} از ${const ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'][of]}',
+    continueTo: (app) => 'به $app بروید',
   );
 
   /// Persian for a `fa` locale, else English.

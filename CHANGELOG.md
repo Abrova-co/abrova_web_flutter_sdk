@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.5.0] - 2026-11-16
+
+### Added
+- `dart run abrova_web:publish --app <address>`: builds, uploads `build/web` to Abrova Store and shows its preparation
+  steps (`--live`, `--test`, `--required`, `--notes-fa`, `--notes-en`, `--no-build`, `-- <flutter build args>`).
+- `AbrovaWebAnalytics`: install analytics for Abrova Store (open, installed, install guide shown and dismissed, reload,
+  notification status), anonymous.
+- `AbrovaInstallGuide` opened from Abrova Store (`?from=store`): step 1 done, "Step 2 of 3", "From Abrova Store";
+  "It's on your home screen" on the first start from the Home Screen. `fromStore` to set it yourself.
+- `AbrovaWeb.fromStore`, `AbrovaWeb.firstHomeScreenStart`, `AbrovaWebContext.userAgent`.
+
+### Changed
+- `AbrovaInstallStrings` has new texts (`fromStore`, `stepOf`, `continueTo`, `onHomeScreen`, `getStarted`, with English
+  defaults) and is no longer a `const` constructor.
+
 ## [0.4.0] - 2026-11-15
 
 ### Added

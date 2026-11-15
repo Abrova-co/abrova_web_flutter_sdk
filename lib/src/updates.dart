@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
+import 'analytics.dart';
 import 'platform/platform.dart' as platform;
 
 /// A newer build of the web app than the one running.
@@ -87,7 +88,11 @@ abstract final class AbrovaWebUpdates {
   }
 
   /// Loads the new version.
-  static void reload() => platform.reloadPage();
+  static void reload() {
+    final info = _available.value;
+    if (info != null) AbrovaWebAnalytics.track('reload', value: '${info.running}→${info.latest}');
+    platform.reloadPage();
+  }
 
   @visibleForTesting
   static void reset() {

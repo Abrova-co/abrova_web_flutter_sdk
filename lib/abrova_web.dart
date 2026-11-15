@@ -2,6 +2,7 @@
 /// ready-made "Add to Home Screen" guide, and new versions (update prompt, required updates).
 library;
 
+export 'src/analytics.dart' show AbrovaWebAnalytics;
 export 'src/install_guide.dart' show AbrovaInstallGuide;
 export 'src/install_strings.dart' show AbrovaInstallStrings;
 export 'src/update_prompt.dart' show AbrovaUpdateGate, AbrovaUpdatePrompt;

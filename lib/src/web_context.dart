@@ -26,6 +26,7 @@ class AbrovaWebContext {
     this.safariVersion,
     this.inAppBrowser,
     this.canPromptInstall = false,
+    this.userAgent = '',
   });
 
   /// A native (Android, iOS, desktop) build: nothing to install.
@@ -52,6 +53,9 @@ class AbrovaWebContext {
 
   /// Android: the browser offered its install prompt, so [AbrovaWeb.promptInstall] shows it.
   final bool canPromptInstall;
+
+  /// The browser's user agent ('' outside the web).
+  final String userAgent;
 
   AbrovaInstallNeed get installNeed {
     if (!isWeb || installed) return AbrovaInstallNeed.none;
@@ -107,6 +111,7 @@ class AbrovaWebContext {
       installed: installed,
       inAppBrowser: inApp,
       canPromptInstall: canPromptInstall,
+      userAgent: userAgent,
     );
   }
 }
@@ -122,6 +127,17 @@ abstract final class AbrovaWeb {
   /// "Not now" for the install guide, kept in the browser for [days].
   static void dismissInstallGuide({int days = 7}) =>
       platform.setDismissedUntil(DateTime.now().add(Duration(days: days)));
+
+  /// Opened from Abrova Store (`?from=store` in the address): the install guide continues the store's steps.
+  static bool get fromStore => Uri.tryParse(platform.currentUrl())?.queryParameters['from'] == 'store';
+
+  /// The first start from the Home Screen on this device (until [AbrovaInstallGuide]'s welcome is closed).
+  static bool get firstHomeScreenStart => context.installed && platform.storageGet(_welcomeKey) == null;
+
+  static const _welcomeKey = 'abrova_web_welcomed';
+
+  /// Closes the first-start welcome for good.
+  static void closeWelcome() => platform.storageSet(_welcomeKey, DateTime.now().toIso8601String());
 
   /// Whether "Not now" is still in effect.
   static bool get installGuideDismissed {
