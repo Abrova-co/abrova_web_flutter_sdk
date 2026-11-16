@@ -94,6 +94,19 @@ void onVisible(void Function() callback) {
 
 void reloadPage() => web.window.location.reload();
 
+/// A cookie of this page (`document.cookie`), or null.
+String? cookieGet(String name) {
+  try {
+    for (final part in web.document.cookie.split(';')) {
+      final i = part.indexOf('=');
+      if (i > 0 && part.substring(0, i).trim() == name) return Uri.decodeComponent(part.substring(i + 1).trim());
+    }
+  } catch (_) {
+    // no cookies here
+  }
+  return null;
+}
+
 String? storageGet(String key) {
   try {
     return web.window.localStorage.getItem(key);

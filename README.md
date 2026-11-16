@@ -9,7 +9,7 @@ For Flutter web apps that people install on their phone (PWA): where the app run
 dependencies:
   abrova_web:
     hosted: https://center.abrova.ir/api/packages/abrova/pub
-    version: ^0.5.3
+    version: ^0.5.4
 ```
 
 ## Install guide

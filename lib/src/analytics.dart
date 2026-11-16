@@ -8,6 +8,22 @@ import 'platform/platform.dart' as platform;
 import 'updates.dart';
 import 'web_context.dart';
 
+/// The cookie Abrova Store leaves on the parent domain (apps.abrova.ir → abrova.ir): its random device id, so an app
+/// opened or installed without the store still reports to that store device (the store then shows Open or Update).
+const sharedStoreDeviceCookie = 'abrova_sd';
+
+final _deviceId = RegExp(r'^[A-Za-z0-9_-]{8,64}$');
+
+/// The store device this app reports to: the one in the address (opened from the store), else the store's cookie on
+/// this browser, else the one remembered from before. Null when none is valid.
+@visibleForTesting
+String? chooseStoreDevice({String? fromUrl, String? fromCookie, String? remembered}) {
+  for (final id in [fromUrl, fromCookie, remembered]) {
+    if (id != null && _deviceId.hasMatch(id)) return id;
+  }
+  return null;
+}
+
 /// Install analytics for Abrova Store: anonymous events (a random id per device, no personal data) about how people
 /// open and install the app. Off until [start]; does nothing outside the web.
 ///
@@ -42,8 +58,12 @@ abstract final class AbrovaWebAnalytics {
     _app = app ?? url?.host.split('.').first.replaceFirst(RegExp(r'-test$'), '');
     _api = api ?? Uri.parse(_defaultApi);
     if (_app == null || _app!.isEmpty) return;
-    final sd = url?.queryParameters['sd'];
-    if (sd != null && RegExp(r'^[A-Za-z0-9_-]{8,64}$').hasMatch(sd)) platform.storageSet(_storeDeviceKey, sd);
+    final sd = chooseStoreDevice(
+      fromUrl: url?.queryParameters['sd'],
+      fromCookie: platform.cookieGet(sharedStoreDeviceCookie),
+      remembered: platform.storageGet(_storeDeviceKey),
+    );
+    if (sd != null) platform.storageSet(_storeDeviceKey, sd);
     final installed = AbrovaWeb.context.installed;
     final first = installed && platform.storageGet(_installedKey) == null;
     if (first) platform.storageSet(_installedKey, DateTime.now().toIso8601String());

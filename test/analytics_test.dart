@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:abrova_web/abrova_web.dart';
+import 'package:abrova_web/src/analytics.dart' show chooseStoreDevice;
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -35,6 +36,18 @@ void main() {
     AbrovaWebAnalytics.track('guide_shown', once: true);
     expect(sent, hasLength(1));
     expect(sent.single.$1, 'http://127.0.0.1:8091/v1/events');
+  });
+
+  test('the store device: from the address, else the store\'s shared cookie, else the remembered one', () {
+    const store = 'a1b2c3d4e5f6a1b2c3d4e5f6', cookie = 'ffeeddccbbaa998877665544', old = '0011223344556677';
+    expect(chooseStoreDevice(fromUrl: store, fromCookie: cookie, remembered: old), store);
+    // Opened or installed straight from its address, never from the store: the store's cookie on this browser.
+    expect(chooseStoreDevice(fromCookie: cookie, remembered: old), cookie);
+    expect(chooseStoreDevice(remembered: old), old);
+    expect(chooseStoreDevice(), isNull);
+    // Anything that isn't a device id is ignored.
+    expect(chooseStoreDevice(fromUrl: 'x', fromCookie: 'a b;c', remembered: old), old);
+    expect(chooseStoreDevice(fromCookie: '<script>'), isNull);
   });
 
   testWidgets('opened from Abrova Store: step 1 done, step 2 of 3, the store pill', (tester) async {

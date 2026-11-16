@@ -14,6 +14,8 @@ void onVisible(void Function() callback) {}
 
 void reloadPage() {}
 
+String? cookieGet(String name) => null;
+
 String? storageGet(String key) => null;
 
 void storageSet(String key, String value) {}

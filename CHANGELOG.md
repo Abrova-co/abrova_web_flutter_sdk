@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.4] - 2026-11-16
+
+### Added
+- Install analytics know the store device also when the app was opened or installed without Abrova Store: the store
+  leaves its random device id in a cookie on the parent domain (`abrova_sd` on abrova.ir), and the app reports to it
+  when the address has no `sd`. Abrova Store can then show Open or Update for this app on that browser.
+
 ## [0.5.3] - 2026-11-16
 
 ### Fixed
