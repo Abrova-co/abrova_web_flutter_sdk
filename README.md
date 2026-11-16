@@ -9,7 +9,7 @@ For Flutter web apps that people install on their phone (PWA): where the app run
 dependencies:
   abrova_web:
     hosted: https://center.abrova.ir/api/packages/abrova/pub
-    version: ^0.5.2
+    version: ^0.5.3
 ```
 
 ## Install guide
@@ -79,7 +79,8 @@ Run both again after upgrading `abrova_push`, and when the manifest or icons cha
 
 ## Abrova Store
 
-Publish (a publish key from the Abrova Store console › your account › Publish keys):
+Publish (a publish key from the Abrova Store console: **Publish keys** at the bottom of the side menu,
+https://apps.abrova.ir/console/en/keys):
 
 ```bash
 ABROVA_STORE_KEY=abs_… dart run abrova_web:publish --app team --live -- --dart-define-from-file=config/app.json

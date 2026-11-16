@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.5.3] - 2026-11-16
+
+### Fixed
+- `abrova_web:publish` and the README point to the right place for publish keys: "Publish keys" at the bottom of
+  the Abrova Store console's side menu (https://apps.abrova.ir/console/en/keys).
+
 ## [0.5.2] - 2026-11-16
 
 ### Fixed

@@ -3,7 +3,8 @@
 //   ABROVA_STORE_KEY=abs_… dart run abrova_web:publish --app team [--live] [--test] [--required]
 //       [--notes-fa "…"] [--notes-en "…"] [--no-build] [--api https://apps.abrova.ir/api] [-- <flutter build args>]
 //
-// The key is a publish key from the Abrova Store console (your account › Publish keys). Everything after `--` goes to
+// The key is a publish key from the Abrova Store console ("Publish keys" at the bottom of the side menu,
+// https://apps.abrova.ir/console/en/keys). Everything after `--` goes to
 // `flutter build web` (for example --dart-define-from-file=config/app.json).
 import 'dart:async';
 import 'dart:convert';
@@ -24,7 +25,7 @@ Future<void> main(List<String> argv) async {
   }
   final key = opt('--key') ?? Platform.environment['ABROVA_STORE_KEY'];
   if (key == null || !key.startsWith('abs_')) {
-    _fail('No publish key: set ABROVA_STORE_KEY (Abrova Store console › your account › Publish keys)');
+    _fail('No publish key: set ABROVA_STORE_KEY (make one at https://apps.abrova.ir/console/en/keys, "Publish keys" at the bottom of the console\'s side menu)');
   }
   final api = (opt('--api') ?? Platform.environment['ABROVA_STORE_API'] ?? 'https://apps.abrova.ir/api').replaceAll(RegExp(r'/+$'), '');
 
